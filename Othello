@@ -1,0 +1,108 @@
+# black is 1
+
+tiles = [[0,0,0,0,0,0,0,0],
+         [0,0,0,2,0,0,0,0],
+         [0,2,0,2,1,0,0,0],
+         [0,0,2,2,1,0,0,0],
+         [0,0,0,1,2,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0]]
+
+def draw_board() :
+    size (420,420)
+    background (0,0.5,0.0)
+    fill(0,0.7,0)
+    stroke("black")
+    for i in range(8):
+        for j in range(8):
+            rect(10+i*50, 10+j*50, 50, 50)
+        
+def draw_tiles() :
+     for i in range(8):
+        for j in range(8):
+            if tiles[j][i]==1 : #draw black tile
+                fill("black")
+                oval(12+i*50, 12+j*50, 46, 46)
+
+            if tiles[j][i]==2 : #draw black tile
+                fill("white")
+                oval(12+i*50, 12+j*50, 46, 46)
+
+                
+def find_possibilities(tile_color) :
+     for i in range(8):
+        for j in range(8):
+            if tiles[j][i] == tile_color :
+                # check 8 directions for possibility
+                #print(i,j)
+                
+                # case -1,-1
+                a=1
+                while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] > 0 :
+                    a=a+1
+                if a <= j and a > 1 :
+                    fill('red')
+                    text(str(a-1), (i-a)*50+30,(j-a)*50+40)
+                # case 0,-1
+                a=1
+                while tiles[j-a][i]!=tile_color and tiles[j-a][i] > 0 :
+                    a=a+1
+                if a <= j and a > 1 :
+                    fill('red')
+                    text(str(a-1), (i)*50+30,(j-a)*50+40)
+                # case +1,-1
+                a=1
+                while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] > 0 :
+                    a=a+1
+                if a <= j and a > 1 :
+                    fill('red')
+                    text(str(a-1), (i+a)*50+30,(j-a)*50+40)
+                  
+                # case -1,0
+                a=1
+                while tiles[j][i-a]!=tile_color and tiles[j][i-a] > 0 :
+                    a=a+1
+                if a <= j and a > 1 :
+                    fill('red')
+                    text(str(a-1), (i-a)*50+30,(j)*50+40)
+                    
+                # case +1,0
+                a=1
+                while tiles[j][i+a]!=tile_color and tiles[j][i+a] > 0 :
+                    a=a+1
+                if a <= j and a > 1:
+                    fill('red')
+                    text(str(a-1), (i+a)*50+30,(j)*50+40)
+
+                # case -1,1
+                a=1
+                while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] > 0 :
+                    a=a+1
+                if a <= j and a > 1:
+                    fill('red')
+                    text(str(a-1), (i-a)*50+30,(+a)*50+40)
+
+                # case 0,1
+                a=1
+                while tiles[j+a][i]!=tile_color and tiles[j+a][i] > 0 :
+                    a=a+1
+                if a <= j and a > 1:
+                    fill('red')
+                    text(str(a-1), (i)*50+30,(j+a)*50+40)
+
+                # case 1,1
+                a=1
+                while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] > 0 :
+                    a=a+1
+                if a <= j and a > 1:
+                    fill('red')
+                    text(str(a-1), (i+a)*50+30,(j+a)*50+40)
+                    
+
+                    
+        
+draw_board()
+draw_tiles()
+find_possibilities(1)
+
