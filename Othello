@@ -1,13 +1,18 @@
 # black is 1
 
+# toDO:
+# zwei richtigngen auf einem Feld zusammenfügen
+# Abfragen ob noch platz zum danaben legen ist
+
+
 tiles = [[0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,2,0,0],
-         [0,0,0,2,2,0,0,0],
-         [0,0,0,1,2,0,0,0],
-         [0,0,0,0,0,2,0,0],
-         [0,0,0,0,0,0,2,0],
-         [0,0,0,0,0,0,0,0]]
+         [0,0,2,2,2,2,0,0],
+         [0,2,2,1,2,0,0,0],
+         [0,0,2,1,2,0,0,0],
+         [0,0,2,2,0,2,0,0],
+         [0,2,1,0,0,0,2,0],
+         [0,0,0,0,0,0,0,2]]
 
 def draw_board() :
     size (420,420)
@@ -35,7 +40,7 @@ def find_possibilities(tile_color) :
     possibilities = 0
     for i in range(8):
         for j in range(8):
-            print(j,i)
+            print(i,j)
             if tiles[j][i] == tile_color and i <= 7 and j <= 7 :
                 print("found:",i,j)
                 #answer = []
@@ -47,6 +52,7 @@ def find_possibilities(tile_color) :
                 #possibilities = 0
                 a=1
                 while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] != 0 :
+                    print("1")
                     a=a+1
                 if a <= i and a <=j and a > 1 :
                     fill('pink')
@@ -60,6 +66,7 @@ def find_possibilities(tile_color) :
                 # case 0,-1
                 a=1
                 while tiles[j-a][i]!=tile_color and tiles[j-a][i] != 0 :
+                    print("2")
                     a=a+1
                 if a <= j and a > 1 :
                     fill('pink')
@@ -75,10 +82,9 @@ def find_possibilities(tile_color) :
                 a=1
                 if i+a <= 7 :
                     while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] != 0 and i+a <=6:
-                        print(a)
-                       
+                        print("3")
                         a=a+1
-                    if a <= j and a > 1 :
+                    if a <= j and i <= 7 and a > 1 :
                         fill('pink')
                         text(str(a-1), (i+a)*50+30,(j-a)*50+40)
                         answer["x-pos"].append(i+a)
@@ -90,8 +96,9 @@ def find_possibilities(tile_color) :
                 # case -1,0
                 a=1
                 while tiles[j][i-a]!=tile_color and tiles[j][i-a] != 0 :
+                    print("4")
                     a=a+1
-                if a <= j and a > 1 :
+                if a <= i and a > 1 :
                     fill('pink')
                     text(str(a-1), (i-a)*50+30,(j)*50+40)
                     answer["x-pos"].append(i-a)
@@ -105,9 +112,9 @@ def find_possibilities(tile_color) :
                 a=1
                 if i+a <= 7 :
                     while tiles[j][i+a]!=tile_color and tiles[j][i+a] != 0  and i+a <=6:
-                       
+                        print("5")   
                         a=a+1
-                    if a <= j and a > 1:
+                    if i <= 7 and a > 1:
                         fill('pink')
                         text(str(a-1), (i+a)*50+30,(j)*50+40)
                         answer["x-pos"].append(i+a)
@@ -121,9 +128,9 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 :
                     while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] != 0 and j+a <= 6:
-                        
+                        print("6")
                         a=a+1
-                    if a <= j and a > 1:
+                    if j <= 7 and a <= i and a > 1:
                         fill('pink')
                         text(str(a-1), (i-a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i-a)
@@ -137,10 +144,10 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 :
                     while tiles[j+a][i]!=tile_color and tiles[j+a][i] != 0 and j+a <= 6:
-
+                        print("7")
                         a=a+1
     
-                    if a <= j and a > 1:
+                    if j <= 7 and a > 1:
                         fill('pink')
                         text(str(a-1), (i)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i)
@@ -154,9 +161,10 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 and i+a <= 7 :
                     while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] != 0 and i+a <= 6 and j+a <= 6:
+                        print("8",a)
                         a=a+1
-                        
-                    if a <= j and a > 1:
+                    if j <= 7 and i <= 7 and a > 1:
+                        print("yeah")
                         fill('pink')
                         text(str(a-1), (i+a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i+a)
