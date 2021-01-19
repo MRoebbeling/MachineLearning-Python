@@ -1,12 +1,12 @@
 # black is 1
 
 tiles = [[0,0,0,0,0,0,0,0],
-         [0,0,0,2,0,0,0,0],
-         [0,2,0,2,1,0,0,0],
-         [0,0,2,2,1,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,2,0,0],
+         [0,0,0,2,2,0,0,0],
          [0,0,0,1,2,0,0,0],
-         [0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,2,0,0],
+         [0,0,0,0,0,0,2,0],
          [0,0,0,0,0,0,0,0]]
 
 def draw_board() :
@@ -31,112 +31,138 @@ def draw_tiles() :
 
                 
 def find_possibilities(tile_color) :
-    #answer = []
     answer = {"x-pos":[],"y-pos":[],"tiles":[],"direction":[]};
     possibilities = 0
     for i in range(8):
         for j in range(8):
-            if tiles[j][i] == tile_color :
-                
+            print(j,i)
+            if tiles[j][i] == tile_color and i <= 7 and j <= 7 :
+                print("found:",i,j)
                 #answer = []
                 
                 # check 8 directions for possibility
+                
+                # case #1
                 # case -1,-1
                 #possibilities = 0
                 a=1
-                while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] > 0 :
+                while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] != 0 :
                     a=a+1
-                if a <= j and a > 1 :
-                    fill('black')
+                if a <= i and a <=j and a > 1 :
+                    fill('pink')
                     text(str(a-1), (i-a)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
                     answer["direction"].append(1)
                     
+                # case #2
                 # case 0,-1
                 a=1
-                while tiles[j-a][i]!=tile_color and tiles[j-a][i] > 0 :
+                while tiles[j-a][i]!=tile_color and tiles[j-a][i] != 0 :
                     a=a+1
                 if a <= j and a > 1 :
-                    fill('black')
+                    fill('pink')
                     text(str(a-1), (i)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
                     answer["direction"].append(2)
                     
+                # case #3
                 # case +1,-1
+                # more complicate to check if tile is on the edge already
                 a=1
-                while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] > 0 :
-                    a=a+1
-                if a <= j and a > 1 :
-                    fill('black')
-                    text(str(a-1), (i+a)*50+30,(j-a)*50+40)
-                    answer["x-pos"].append(i+a)
-                    answer["y-pos"].append(j-a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(3)
-                    
+                if i+a <= 7 :
+                    while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] != 0 and i+a <=6:
+                        print(a)
+                       
+                        a=a+1
+                    if a <= j and a > 1 :
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j-a)*50+40)
+                        answer["x-pos"].append(i+a)
+                        answer["y-pos"].append(j-a)
+                        answer["tiles"].append(a-1)
+                        answer["direction"].append(3)
+                        
+                # case #4
                 # case -1,0
                 a=1
-                while tiles[j][i-a]!=tile_color and tiles[j][i-a] > 0 :
+                while tiles[j][i-a]!=tile_color and tiles[j][i-a] != 0 :
                     a=a+1
                 if a <= j and a > 1 :
-                    fill('black')
+                    fill('pink')
                     text(str(a-1), (i-a)*50+30,(j)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j)
                     answer["tiles"].append(a-1)
                     answer["direction"].append(4)
                     
+                # case #5    
                 # case +1,0
+                # chec if in playfield
                 a=1
-                while tiles[j][i+a]!=tile_color and tiles[j][i+a] > 0 :
-                    a=a+1
-                if a <= j and a > 1:
-                    fill('black')
-                    text(str(a-1), (i+a)*50+30,(j)*50+40)
-                    answer["x-pos"].append(i+a)
-                    answer["y-pos"].append(j)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(5)
+                if i+a <= 7 :
+                    while tiles[j][i+a]!=tile_color and tiles[j][i+a] != 0  and i+a <=6:
+                       
+                        a=a+1
+                    if a <= j and a > 1:
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j)*50+40)
+                        answer["x-pos"].append(i+a)
+                        answer["y-pos"].append(j)
+                        answer["tiles"].append(a-1)
+                        answer["direction"].append(5)
 
+                # case #6
                 # case -1,1
+                # check if out of playfield
                 a=1
-                while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] > 0 :
-                    a=a+1
-                if a <= j and a > 1:
-                    fill('black')
-                    text(str(a-1), (i-a)*50+30,(j+a)*50+40)
-                    answer["x-pos"].append(i-a)
-                    answer["y-pos"].append(j+a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(6)
+                if j+a <= 7 :
+                    while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] != 0 and j+a <= 6:
+                        
+                        a=a+1
+                    if a <= j and a > 1:
+                        fill('pink')
+                        text(str(a-1), (i-a)*50+30,(j+a)*50+40)
+                        answer["x-pos"].append(i-a)
+                        answer["y-pos"].append(j+a)
+                        answer["tiles"].append(a-1)
+                        answer["direction"].append(6)
 
+                # case #7
                 # case 0,1
+                # check if out of playfield
                 a=1
-                while tiles[j+a][i]!=tile_color and tiles[j+a][i] > 0 :
-                    a=a+1
-                if a <= j and a > 1:
-                    fill('black')
-                    text(str(a-1), (i)*50+30,(j+a)*50+40)
-                    answer["x-pos"].append(i)
-                    answer["y-pos"].append(j+a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(7)
+                if j+a <= 7 :
+                    while tiles[j+a][i]!=tile_color and tiles[j+a][i] != 0 and j+a <= 6:
 
+                        a=a+1
+    
+                    if a <= j and a > 1:
+                        fill('pink')
+                        text(str(a-1), (i)*50+30,(j+a)*50+40)
+                        answer["x-pos"].append(i)
+                        answer["y-pos"].append(j+a)
+                        answer["tiles"].append(a-1)
+                        answer["direction"].append(7)
+
+                # case #8
                 # case 1,1
+                # check if out of playfield
                 a=1
-                while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] > 0 :
-                    a=a+1
-                if a <= j and a > 1:
-                    fill('black')
-                    text(str(a-1), (i+a)*50+30,(j+a)*50+40)
-                    answer["x-pos"].append(i+a)
-                    answer["y-pos"].append(j+a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(8)
+                if j+a <= 7 and i+a <= 7 :
+                    while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] != 0 and i+a <= 6 and j+a <= 6:
+                        a=a+1
+                        
+                    if a <= j and a > 1:
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j+a)*50+40)
+                        answer["x-pos"].append(i+a)
+                        answer["y-pos"].append(j+a)
+                        answer["tiles"].append(a-1)
+                        answer["direction"].append(8)
                
     return answer    
     
@@ -154,11 +180,21 @@ def set_tile(tile_color, possibilities) :
         fill(1,1,1,0.5)
     oval(12+prod["x-pos"][pos]*50, 12+prod["y-pos"][pos]*50, 46, 46)
     
+    tiles[prod["y-pos"][pos]][prod["x-pos"][pos]] = tile_color
+    
+    # Flip rest of tiles
+    #Get direction
+    print (prod["x-pos"][pos],":",prod["y-pos"][pos],":",prod["direction"][pos])
+    
+    
         
 draw_board()
 draw_tiles()
 prod = find_possibilities(1)
-set_tile(1, prod)
-prod = find_possibilities(2)
-set_tile(2, prod)
 print (prod)
+set_tile(1, prod)
+
+#prod = find_possibilities(2)
+#set_tile(2, prod)
+
+#print (prod)
