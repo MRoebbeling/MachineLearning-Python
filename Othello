@@ -8,11 +8,11 @@
 tiles = [[0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0],
          [0,0,2,2,2,2,0,0],
-         [0,2,2,1,2,0,0,0],
+         [1,2,2,2,0,0,0,0],
          [0,0,2,1,2,0,0,0],
          [0,0,2,2,0,2,0,0],
-         [0,2,1,0,0,0,2,0],
-         [0,0,0,0,0,0,0,2]]
+         [0,2,2,0,0,0,2,0],
+         [0,1,0,0,0,0,0,1]]
 
 def draw_board() :
     size (420,420)
@@ -55,8 +55,8 @@ def find_possibilities(tile_color) :
                     print("1")
                     a=a+1
                 if a <= i and a <=j and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i-a)*50+30,(j-a)*50+40)
+                    #fill('pink')
+                    #text(str(a-1), (i-a)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
@@ -69,8 +69,8 @@ def find_possibilities(tile_color) :
                     print("2")
                     a=a+1
                 if a <= j and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i)*50+30,(j-a)*50+40)
+                    #fill('pink')
+                    #text(str(a-1), (i)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
@@ -85,8 +85,8 @@ def find_possibilities(tile_color) :
                         print("3")
                         a=a+1
                     if a <= j and i <= 7 and a > 1 :
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j-a)*50+40)
+                        #fill('pink')
+                        #text(str(a-1), (i+a)*50+30,(j-a)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j-a)
                         answer["tiles"].append(a-1)
@@ -99,8 +99,8 @@ def find_possibilities(tile_color) :
                     print("4")
                     a=a+1
                 if a <= i and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i-a)*50+30,(j)*50+40)
+                    #fill('pink')
+                    #text(str(a-1), (i-a)*50+30,(j)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j)
                     answer["tiles"].append(a-1)
@@ -115,8 +115,8 @@ def find_possibilities(tile_color) :
                         print("5")   
                         a=a+1
                     if i <= 7 and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j)*50+40)
+                        #fill('pink')
+                        #text(str(a-1), (i+a)*50+30,(j)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j)
                         answer["tiles"].append(a-1)
@@ -131,8 +131,8 @@ def find_possibilities(tile_color) :
                         print("6")
                         a=a+1
                     if j <= 7 and a <= i and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i-a)*50+30,(j+a)*50+40)
+                        #fill('pink')
+                        #text(str(a-1), (i-a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i-a)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -148,8 +148,8 @@ def find_possibilities(tile_color) :
                         a=a+1
     
                     if j <= 7 and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i)*50+30,(j+a)*50+40)
+                        #fill('pink')
+                        #text(str(a-1), (i)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -164,9 +164,8 @@ def find_possibilities(tile_color) :
                         print("8",a)
                         a=a+1
                     if j <= 7 and i <= 7 and a > 1:
-                        print("yeah")
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j+a)*50+40)
+                        #fill('pink')
+                        #text(str(a-1), (i+a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -174,33 +173,61 @@ def find_possibilities(tile_color) :
                
     return answer    
     
+def evaluation (possibilities) :
     
-def set_tile(tile_color, possibilities) :
+    # First Check if one tile gets more then one solution
+    # in case on tile gets more hits, it is added
+    print(possibilities)
+    start =0
+    while start < len(possibilities['tiles']):
+        pop_position=[] 
+        for i in range(start+1, len(possibilities['tiles'])) :
+             # check is tile is the same
+             #print(start,i,len(possibilities['tiles']))
+             if possibilities['x-pos'][start] == possibilities['x-pos'][i] and possibilities['y-pos'][start] == possibilities['y-pos'][i]:
+                 #add the number of tiles to the start tile an erase the i tile
+                 #print('start: ',possibilities['x-pos'][start],possibilities['y-pos'][start])
+                 #print('compe: ',possibilities['x-pos'][i],possibilities['y-pos'][i])
+                 possibilities['tiles'][start]+=possibilities['tiles'][i]
+                 pop_position.append(i)
+                 
+        for i in pop_position:
+            print(i)
+            possibilities['x-pos'].pop(i)
+            possibilities['y-pos'].pop(i)
+            possibilities['tiles'].pop(i)
+            possibilities['direction'].pop(i)
+            print(possibilities)
+        start += 1         
+        
+                 
     best = 0
     pos = 0
-    for i in range(len(prod['tiles'])) :
-        if prod["tiles"][i] > best :
-            best = prod["tiles"][i]
+    for i in range(len(possibilities['tiles'])) :
+        print(i)
+        if possibilities["tiles"][i] > best :
+            best = possibilities["tiles"][i]
             pos = i
-    if tile_color == 1 :
-        fill(0,0,0,0.5)
-    else :
-        fill(1,1,1,0.5)
-    oval(12+prod["x-pos"][pos]*50, 12+prod["y-pos"][pos]*50, 46, 46)
+            print (possibilities["tiles"][i],pos,best)
+    print pos
+    print (possibilities["x-pos"][pos],":",possibilities["y-pos"][pos],":",possibilities["direction"][pos])
     
-    tiles[prod["y-pos"][pos]][prod["x-pos"][pos]] = tile_color
+    position=(possibilities["x-pos"][pos],possibilities["y-pos"][pos])
     
-    # Flip rest of tiles
-    #Get direction
-    print (prod["x-pos"][pos],":",prod["y-pos"][pos],":",prod["direction"][pos])
+    return position
+    
+def set_tile(tile_color, position) :
+    print (position[0])
+    fill('pink')
+    oval(12 + position[0] * 50, 12 + position[1] * 50, 46, 46)
     
     
-        
 draw_board()
 draw_tiles()
 prod = find_possibilities(1)
-print (prod)
-set_tile(1, prod)
+position = evaluation(prod) 
+print (position)
+set_tile(1, position)
 
 #prod = find_possibilities(2)
 #set_tile(2, prod)
