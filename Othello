@@ -5,14 +5,14 @@
 # Abfragen ob noch platz zum danaben legen ist
 
 
-tiles = [[1,0,0,0,0,0,0,1],
+tiles = [[1,0,0,0,0,0,0,0],
+         [0,2,0,0,0,0,0,0],
+         [0,0,2,0,0,0,0,0],
+         [0,0,0,2,1,0,0,0],
+         [0,0,0,0,2,2,0,0],
          [0,0,0,0,0,0,0,0],
-         [0,0,2,2,2,2,2,0],
-         [1,2,2,2,0,2,0,0],
-         [0,0,2,1,2,0,0,0],
-         [0,0,2,2,0,2,0,0],
-         [0,2,2,0,0,0,2,0],
-         [1,1,0,0,0,0,0,1]]
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0]]
 
 def draw_board() :
     size (420,420)
@@ -34,6 +34,16 @@ def draw_tiles() :
                 fill("white")
                 oval(12+i*50, 12+j*50, 46, 46)
 
+def print_tiles() :
+    for i in range(len(tiles)):
+        print(tiles[i])
+        
+def flipt_tiles(liste, tile_color) :
+    for i in range(len(liste)) :
+        print('liste',liste[i][0])
+        tiles[liste[i][0]][liste[i][1]]=tile_color
+    print_tiles()
+    
                 
 def find_possibilities(tile_color) :
     answer = {"x-pos":[],"y-pos":[],"tiles":[],"direction":[]};
@@ -55,8 +65,8 @@ def find_possibilities(tile_color) :
 
                     a=a+1
                 if a <= i and a <=j and a > 1 :
-                    #fill('pink')
-                    #text(str(a-1), (i-a)*50+30,(j-a)*50+40)
+                    fill('pink')
+                    text(str(a-1), (i-a)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
@@ -69,8 +79,8 @@ def find_possibilities(tile_color) :
 
                     a=a+1
                 if a <= j and a > 1 :
-                    #fill('pink')
-                    #text(str(a-1), (i)*50+30,(j-a)*50+40)
+                    fill('pink')
+                    text(str(a-1), (i)*50+30,(j-a)*50+40)
                     answer["x-pos"].append(i)
                     answer["y-pos"].append(j-a)
                     answer["tiles"].append(a-1)
@@ -85,8 +95,8 @@ def find_possibilities(tile_color) :
 
                         a=a+1
                     if a <= j and i <= 7 and a > 1 :
-                        #fill('pink')
-                        #text(str(a-1), (i+a)*50+30,(j-a)*50+40)
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j-a)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j-a)
                         answer["tiles"].append(a-1)
@@ -99,8 +109,8 @@ def find_possibilities(tile_color) :
 
                     a=a+1
                 if a <= i and a > 1 :
-                    #fill('pink')
-                    #text(str(a-1), (i-a)*50+30,(j)*50+40)
+                    fill('pink')
+                    text(str(a-1), (i-a)*50+30,(j)*50+40)
                     answer["x-pos"].append(i-a)
                     answer["y-pos"].append(j)
                     answer["tiles"].append(a-1)
@@ -115,8 +125,8 @@ def find_possibilities(tile_color) :
 
                         a=a+1
                     if i <= 7 and a > 1:
-                        #fill('pink')
-                        #text(str(a-1), (i+a)*50+30,(j)*50+40)
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j)
                         answer["tiles"].append(a-1)
@@ -131,8 +141,8 @@ def find_possibilities(tile_color) :
 
                         a=a+1
                     if j <= 7 and a <= i and a > 1:
-                        #fill('pink')
-                        #text(str(a-1), (i-a)*50+30,(j+a)*50+40)
+                        fill('pink')
+                        text(str(a-1), (i-a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i-a)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -148,8 +158,8 @@ def find_possibilities(tile_color) :
                         a=a+1
     
                     if j <= 7 and a > 1:
-                        #fill('pink')
-                        #text(str(a-1), (i)*50+30,(j+a)*50+40)
+                        fill('pink')
+                        text(str(a-1), (i)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -164,8 +174,8 @@ def find_possibilities(tile_color) :
 
                         a=a+1
                     if j <= 7 and i <= 7 and a > 1:
-                        #fill('pink')
-                        #text(str(a-1), (i+a)*50+30,(j+a)*50+40)
+                        fill('pink')
+                        text(str(a-1), (i+a)*50+30,(j+a)*50+40)
                         answer["x-pos"].append(i+a)
                         answer["y-pos"].append(j+a)
                         answer["tiles"].append(a-1)
@@ -219,32 +229,71 @@ def set_tile(tile_color, position) :
     else :
         fill('pink')
     oval(12 + position[0] * 50, 12 + position[1] * 50, 46, 46)
+    tiles[position[1]][position[0]]=tile_color
     
     # Flip the tiles
     # checking all 8 possible directions from th enew set tile and 
     # flip every other tile until the same colored tile will appear
     # positions of the tiles that can be flipped are stored in a list, first
     
-    #first direction x-1 y-1
+    # first direction 
+    # direction x-1 y-1
+    
+    valid=0 #es steht nicht fest ob es reguläre tiles zum wenden gibt
+    fliptiles=[] # liste mit den zu wendenen teilen
     if position[0] >= 1 and position[1] >= 1 :
         print('dir1')
         a=1
         while tiles[position[1]-a][position[0]-a]!=tile_color and tiles[position[1]-a][position[0]-a] != 0 :
-            fill('pink')
-            oval(12 + (psoition[0]-a) * 50, 12 + (psoition[1]-a) * 50, 46, 46)
-            a = a +1
+            print(a)
+            fliptiles.append([position[1]-a,position[0]-a])
+            #fill('green')
+            #oval(12 + (position[1]-a) * 50, 12 + (position[0]-a) * 50, 46, 46)
+            #tiles[position[0]-a][position[1]-a]=tile_color
+            a = a + 1 
+        # check for valibility if the tile in the 
+        # direction is tile_color or out of border
+        print(fliptiles)
+        print(position[0],position[1])
+        if position[0] >= a and position[1] >= a and tiles[position[1]-a][position[0]-a]==tile_color :
+            #if tiles[position[1]-a][position[0]-a]==tile_color :
+            print('tät')
+            flipt_tiles(fliptiles, tile_color)
+            draw_board()
+            draw_tiles()
+            # funktion aufrufen um die Teile zu swappen und tiles zu setzten
+            # nix mehr zeichenen. läuft über draw board
+            
+            
+    # second direction 
+    # direction x y-1
+    if position[0] >= 1 and position[1] >= 1 :
+        print('dir2')
+        print_tiles()
+        print('x',position[0],'y',position[1])
+        a=1
+        while tiles[position[1]-a][position[0]]!=tile_color and tiles[position[1]-a][position[0]] != 0 :
+            print(a)
+            fill('green')
+            oval(12 + (position[0]) * 50, 12 + (position[1]-a) * 50, 46, 46)
+            tiles[position[1]-a][position[0]]=tile_color
+            a = a + 1         
+        print_tiles()
     # direction six
     # direction x-1 y+1
     
-    if position[0] >= 1 and position[1] >= 1 :
+    if position[0] <= 6 and position[1] >= 1 :
         print('dir6')
+        print('x',position[0],'y',position[1])
         a=1
-        print(position[0]-a)
-        print(tiles[position[0]-a][position[1]+a])
-        while tiles[position[0]-a][position[1]+a]!=tile_color and tiles[position[0]-a][position[1]+a] != 0 :
+        print(position[1]-a)
+        print(tiles[position[1]-a][position[0]+a])
+        while tiles[position[1]-a][position[0]+a]!=tile_color and tiles[position[1]-a][position[0]+a] != 0 :
             print(a)
             fill('green')
-            oval(12 + (position[1]+a) * 50, 12 + (position[0]-a) * 50, 46, 46)
+            print('x',position[0]+a,'y',position[1]-a)
+            oval(12 + (position[0]+a) * 50, 12 + (position[1]-a) * 50, 46, 46)
+            tiles[position[1]-a][position[0]+a]=tile_color
             a = a + 1 
     
     
@@ -252,9 +301,9 @@ draw_board()
 draw_tiles()
 prod = find_possibilities(1)
 position = evaluation(prod) 
-print (position)
+print (prod)
 set_tile(1, position)
-
+print_tiles()
 #prod = find_possibilities(2)
 #set_tile(2, prod)
 
