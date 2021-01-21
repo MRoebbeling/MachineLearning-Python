@@ -5,14 +5,14 @@
 # Abfragen ob noch platz zum danaben legen ist
 
 
-tiles = [[0,0,0,0,0,0,0,0],
+tiles = [[1,0,0,0,0,0,0,1],
          [0,0,0,0,0,0,0,0],
-         [0,0,2,2,2,2,0,0],
-         [1,2,2,2,0,0,0,0],
+         [0,0,2,2,2,2,2,0],
+         [1,2,2,2,0,2,0,0],
          [0,0,2,1,2,0,0,0],
          [0,0,2,2,0,2,0,0],
          [0,2,2,0,0,0,2,0],
-         [0,1,0,0,0,0,0,1]]
+         [1,1,0,0,0,0,0,1]]
 
 def draw_board() :
     size (420,420)
@@ -40,9 +40,9 @@ def find_possibilities(tile_color) :
     possibilities = 0
     for i in range(8):
         for j in range(8):
-            print(i,j)
+
             if tiles[j][i] == tile_color and i <= 7 and j <= 7 :
-                print("found:",i,j)
+
                 #answer = []
                 
                 # check 8 directions for possibility
@@ -52,7 +52,7 @@ def find_possibilities(tile_color) :
                 #possibilities = 0
                 a=1
                 while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] != 0 :
-                    print("1")
+
                     a=a+1
                 if a <= i and a <=j and a > 1 :
                     #fill('pink')
@@ -66,7 +66,7 @@ def find_possibilities(tile_color) :
                 # case 0,-1
                 a=1
                 while tiles[j-a][i]!=tile_color and tiles[j-a][i] != 0 :
-                    print("2")
+
                     a=a+1
                 if a <= j and a > 1 :
                     #fill('pink')
@@ -82,7 +82,7 @@ def find_possibilities(tile_color) :
                 a=1
                 if i+a <= 7 :
                     while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] != 0 and i+a <=6:
-                        print("3")
+
                         a=a+1
                     if a <= j and i <= 7 and a > 1 :
                         #fill('pink')
@@ -96,7 +96,7 @@ def find_possibilities(tile_color) :
                 # case -1,0
                 a=1
                 while tiles[j][i-a]!=tile_color and tiles[j][i-a] != 0 :
-                    print("4")
+
                     a=a+1
                 if a <= i and a > 1 :
                     #fill('pink')
@@ -112,7 +112,7 @@ def find_possibilities(tile_color) :
                 a=1
                 if i+a <= 7 :
                     while tiles[j][i+a]!=tile_color and tiles[j][i+a] != 0  and i+a <=6:
-                        print("5")   
+
                         a=a+1
                     if i <= 7 and a > 1:
                         #fill('pink')
@@ -128,7 +128,7 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 :
                     while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] != 0 and j+a <= 6:
-                        print("6")
+
                         a=a+1
                     if j <= 7 and a <= i and a > 1:
                         #fill('pink')
@@ -144,7 +144,7 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 :
                     while tiles[j+a][i]!=tile_color and tiles[j+a][i] != 0 and j+a <= 6:
-                        print("7")
+
                         a=a+1
     
                     if j <= 7 and a > 1:
@@ -161,7 +161,7 @@ def find_possibilities(tile_color) :
                 a=1
                 if j+a <= 7 and i+a <= 7 :
                     while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] != 0 and i+a <= 6 and j+a <= 6:
-                        print("8",a)
+
                         a=a+1
                     if j <= 7 and i <= 7 and a > 1:
                         #fill('pink')
@@ -173,11 +173,12 @@ def find_possibilities(tile_color) :
                
     return answer    
     
+    
 def evaluation (possibilities) :
     
     # First Check if one tile gets more then one solution
     # in case on tile gets more hits, it is added
-    print(possibilities)
+
     start =0
     while start < len(possibilities['tiles']):
         pop_position=[] 
@@ -192,7 +193,6 @@ def evaluation (possibilities) :
                  pop_position.append(i)
                  
         for i in pop_position:
-            print(i)
             possibilities['x-pos'].pop(i)
             possibilities['y-pos'].pop(i)
             possibilities['tiles'].pop(i)
@@ -204,22 +204,48 @@ def evaluation (possibilities) :
     best = 0
     pos = 0
     for i in range(len(possibilities['tiles'])) :
-        print(i)
+
         if possibilities["tiles"][i] > best :
             best = possibilities["tiles"][i]
             pos = i
-            print (possibilities["tiles"][i],pos,best)
-    print pos
-    print (possibilities["x-pos"][pos],":",possibilities["y-pos"][pos],":",possibilities["direction"][pos])
-    
+
     position=(possibilities["x-pos"][pos],possibilities["y-pos"][pos])
     
     return position
     
 def set_tile(tile_color, position) :
-    print (position[0])
-    fill('pink')
+    if tile_color == 1 :
+        fill('grey')
+    else :
+        fill('pink')
     oval(12 + position[0] * 50, 12 + position[1] * 50, 46, 46)
+    
+    # Flip the tiles
+    # checking all 8 possible directions from th enew set tile and 
+    # flip every other tile until the same colored tile will appear
+    # positions of the tiles that can be flipped are stored in a list, first
+    
+    #first direction x-1 y-1
+    if position[0] >= 1 and position[1] >= 1 :
+        print('dir1')
+        a=1
+        while tiles[position[1]-a][position[0]-a]!=tile_color and tiles[position[1]-a][position[0]-a] != 0 :
+            fill('pink')
+            oval(12 + (psoition[0]-a) * 50, 12 + (psoition[1]-a) * 50, 46, 46)
+            a = a +1
+    # direction six
+    # direction x-1 y+1
+    
+    if position[0] >= 1 and position[1] >= 1 :
+        print('dir6')
+        a=1
+        print(position[0]-a)
+        print(tiles[position[0]-a][position[1]+a])
+        while tiles[position[0]-a][position[1]+a]!=tile_color and tiles[position[0]-a][position[1]+a] != 0 :
+            print(a)
+            fill('green')
+            oval(12 + (position[1]+a) * 50, 12 + (position[0]-a) * 50, 46, 46)
+            a = a + 1 
     
     
 draw_board()
