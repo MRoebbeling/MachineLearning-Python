@@ -4,15 +4,20 @@
 # zwei richtigngen auf einem Feld zusammenfügen
 # Abfragen ob noch platz zum danaben legen ist
 
+# Ende des Spieles, wenn beide Farben nicht mehr legen können
+# oder es für beide keine legalen züge mehr gibt
 
-tiles = [[1,0,0,0,0,0,0,0],
-         [0,2,0,0,0,0,0,0],
-         [0,0,2,0,0,0,0,0],
-         [0,0,0,2,1,0,0,0],
-         [0,0,0,0,2,2,0,0],
-         [0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0],
+
+tiles = [[0,0,0,0,0,0,0,0],
+         [0,2,0,0,2,0,0,0],
+         [0,0,1,0,2,0,0,1],
+         [0,0,0,2,2,0,0,2],
+         [0,0,0,0,1,0,0,2],
+         [0,0,0,0,0,2,0,2],
+         [0,0,0,0,0,0,2,2],
          [0,0,0,0,0,0,0,0]]
+         
+directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
 
 def draw_board() :
     size (420,420)
@@ -27,11 +32,11 @@ def draw_tiles() :
      for i in range(8):
         for j in range(8):
             if tiles[j][i]==1 : #draw black tile
-                fill("black")
+                fill(0,0,0,0.5)
                 oval(12+i*50, 12+j*50, 46, 46)
 
             if tiles[j][i]==2 : #draw black tile
-                fill("white")
+                fill(1,1,1,0.5)
                 oval(12+i*50, 12+j*50, 46, 46)
 
 def print_tiles() :
@@ -44,145 +49,17 @@ def flipt_tiles(liste, tile_color) :
         tiles[liste[i][0]][liste[i][1]]=tile_color
     print_tiles()
     
-                
-def find_possibilities(tile_color) :
-    answer = {"x-pos":[],"y-pos":[],"tiles":[],"direction":[]};
-    possibilities = 0
+    
+def find_tiles(tile_color):
+    answer = {"x-pos":[],"y-pos":[]};
     for i in range(8):
         for j in range(8):
-
             if tiles[j][i] == tile_color and i <= 7 and j <= 7 :
-
-                #answer = []
-                
-                # check 8 directions for possibility
-                
-                # case #1
-                # case -1,-1
-                #possibilities = 0
-                a=1
-                while tiles[j-a][i-a]!=tile_color and tiles[j-a][i-a] != 0 :
-
-                    a=a+1
-                if a <= i and a <=j and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i-a)*50+30,(j-a)*50+40)
-                    answer["x-pos"].append(i-a)
-                    answer["y-pos"].append(j-a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(1)
-                    
-                # case #2
-                # case 0,-1
-                a=1
-                while tiles[j-a][i]!=tile_color and tiles[j-a][i] != 0 :
-
-                    a=a+1
-                if a <= j and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i)*50+30,(j-a)*50+40)
-                    answer["x-pos"].append(i)
-                    answer["y-pos"].append(j-a)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(2)
-                    
-                # case #3
-                # case +1,-1
-                # more complicate to check if tile is on the edge already
-                a=1
-                if i+a <= 7 :
-                    while tiles[j-a][i+a]!=tile_color and tiles[j-a][i+a] != 0 and i+a <=6:
-
-                        a=a+1
-                    if a <= j and i <= 7 and a > 1 :
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j-a)*50+40)
-                        answer["x-pos"].append(i+a)
-                        answer["y-pos"].append(j-a)
-                        answer["tiles"].append(a-1)
-                        answer["direction"].append(3)
-                        
-                # case #4
-                # case -1,0
-                a=1
-                while tiles[j][i-a]!=tile_color and tiles[j][i-a] != 0 :
-
-                    a=a+1
-                if a <= i and a > 1 :
-                    fill('pink')
-                    text(str(a-1), (i-a)*50+30,(j)*50+40)
-                    answer["x-pos"].append(i-a)
-                    answer["y-pos"].append(j)
-                    answer["tiles"].append(a-1)
-                    answer["direction"].append(4)
-                    
-                # case #5    
-                # case +1,0
-                # chec if in playfield
-                a=1
-                if i+a <= 7 :
-                    while tiles[j][i+a]!=tile_color and tiles[j][i+a] != 0  and i+a <=6:
-
-                        a=a+1
-                    if i <= 7 and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j)*50+40)
-                        answer["x-pos"].append(i+a)
-                        answer["y-pos"].append(j)
-                        answer["tiles"].append(a-1)
-                        answer["direction"].append(5)
-
-                # case #6
-                # case -1,1
-                # check if out of playfield
-                a=1
-                if j+a <= 7 :
-                    while tiles[j+a][i-a]!=tile_color and tiles[j+a][i-a] != 0 and j+a <= 6:
-
-                        a=a+1
-                    if j <= 7 and a <= i and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i-a)*50+30,(j+a)*50+40)
-                        answer["x-pos"].append(i-a)
-                        answer["y-pos"].append(j+a)
-                        answer["tiles"].append(a-1)
-                        answer["direction"].append(6)
-
-                # case #7
-                # case 0,1
-                # check if out of playfield
-                a=1
-                if j+a <= 7 :
-                    while tiles[j+a][i]!=tile_color and tiles[j+a][i] != 0 and j+a <= 6:
-
-                        a=a+1
-    
-                    if j <= 7 and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i)*50+30,(j+a)*50+40)
-                        answer["x-pos"].append(i)
-                        answer["y-pos"].append(j+a)
-                        answer["tiles"].append(a-1)
-                        answer["direction"].append(7)
-
-                # case #8
-                # case 1,1
-                # check if out of playfield
-                a=1
-                if j+a <= 7 and i+a <= 7 :
-                    while tiles[j+a][i+a]!=tile_color and tiles[j+a][i+a] != 0 and i+a <= 6 and j+a <= 6:
-
-                        a=a+1
-                    if j <= 7 and i <= 7 and a > 1:
-                        fill('pink')
-                        text(str(a-1), (i+a)*50+30,(j+a)*50+40)
-                        answer["x-pos"].append(i+a)
-                        answer["y-pos"].append(j+a)
-                        answer["tiles"].append(a-1)
-                        answer["direction"].append(8)
+                answer["x-pos"].append(i)
+                answer["y-pos"].append(j)
+    return answer  
                
-    return answer    
-    
+  
     
 def evaluation (possibilities) :
     
@@ -223,88 +100,99 @@ def evaluation (possibilities) :
     
     return position
     
-def set_tile(tile_color, position) :
-    if tile_color == 1 :
-        fill('grey')
-    else :
-        fill('pink')
-    oval(12 + position[0] * 50, 12 + position[1] * 50, 46, 46)
-    tiles[position[1]][position[0]]=tile_color
     
-    # Flip the tiles
-    # checking all 8 possible directions from th enew set tile and 
-    # flip every other tile until the same colored tile will appear
-    # positions of the tiles that can be flipped are stored in a list, first
+def find_solutions (tile_color, positions, status):
+    # läuft durch alle teile der farbe tile_color und 
+    # sammelt lösungen mit der anzahl der möglichen Flips
+    for c in rand(len(positions)):
+        
+        main_logic(tile_color, position[c],status)
+
     
-    # first direction 
-    # direction x-1 y-1
+def main_logic(tile_color, position, status) :
+    # status indicates if the funtion is serching for solutions or flipping the tiles after the best solition was found
+    # status 1 = finding solutions
+    # status 2 ? flipping tiles
+    answer = {"x-pos":[],"y-pos":[],"tiles":[]} #positionen von möglichen teilen mit möglichkeit zur wendung Tiles gibt anzahl an
+    possibilities = 0 # speichert temporär die anzahl der möglichen flips in der richtung ab
     
-    valid=0 #es steht nicht fest ob es reguläre tiles zum wenden gibt
-    fliptiles=[] # liste mit den zu wendenen teilen
-    if position[0] >= 1 and position[1] >= 1 :
-        print('dir1')
-        a=1
-        while tiles[position[1]-a][position[0]-a]!=tile_color and tiles[position[1]-a][position[0]-a] != 0 :
-            print(a)
-            fliptiles.append([position[1]-a,position[0]-a])
-            #fill('green')
-            #oval(12 + (position[1]-a) * 50, 12 + (position[0]-a) * 50, 46, 46)
-            #tiles[position[0]-a][position[1]-a]=tile_color
-            a = a + 1 
-        # check for valibility if the tile in the 
-        # direction is tile_color or out of border
-        print(fliptiles)
-        print(position[0],position[1])
-        if position[0] >= a and position[1] >= a and tiles[position[1]-a][position[0]-a]==tile_color :
-            #if tiles[position[1]-a][position[0]-a]==tile_color :
-            print('tät')
-            flipt_tiles(fliptiles, tile_color)
-            draw_board()
-            draw_tiles()
-            # funktion aufrufen um die Teile zu swappen und tiles zu setzten
-            # nix mehr zeichenen. läuft über draw board
-            
-            
-    # second direction 
-    # direction x y-1
-    if position[0] >= 1 and position[1] >= 1 :
-        print('dir2')
-        print_tiles()
-        print('x',position[0],'y',position[1])
-        a=1
-        while tiles[position[1]-a][position[0]]!=tile_color and tiles[position[1]-a][position[0]] != 0 :
-            print(a)
-            fill('green')
-            oval(12 + (position[0]) * 50, 12 + (position[1]-a) * 50, 46, 46)
-            tiles[position[1]-a][position[0]]=tile_color
-            a = a + 1         
-        print_tiles()
-    # direction six
-    # direction x-1 y+1
-    
-    if position[0] <= 6 and position[1] >= 1 :
-        print('dir6')
-        print('x',position[0],'y',position[1])
-        a=1
-        print(position[1]-a)
-        print(tiles[position[1]-a][position[0]+a])
-        while tiles[position[1]-a][position[0]+a]!=tile_color and tiles[position[1]-a][position[0]+a] != 0 :
-            print(a)
-            fill('green')
-            print('x',position[0]+a,'y',position[1]-a)
-            oval(12 + (position[0]+a) * 50, 12 + (position[1]-a) * 50, 46, 46)
-            tiles[position[1]-a][position[0]+a]=tile_color
-            a = a + 1 
-    
-    
+    for dir_check in range(len(directions)) :
+        print(dir_check)
+        valid=False #es steht nicht fest ob es reguläre tiles zum wenden gibt
+        fliptiles=[] # liste mit den zu wendenen teilen
+        
+        dir_index = 1 #index für die Iteration in die direction
+        still_good = True # in
+        
+        while still_good :
+            # abfrage on in range of board
+            if position[0]+(dir_index*directions[dir_check][0])>=0 and position[0]+(dir_index*directions[dir_check][0])<=7 and position[1]+(dir_index*directions[dir_check][1])>=0 and position[1]+(dir_index*directions[dir_check][1])<=7 :
+                #print('es geht weiter mit direction',dir_check,dir_index)
+                # wenn die geprüfte position 0 ist 
+                if tiles[position[1] + (dir_index * directions[dir_check][1])][position[0] + (dir_index * directions[dir_check][0])] == 0 :
+                    if status == 2 : #flipping tiles
+                        still_good = False
+                    if status == 1 : #finding solutions
+                        still_good = False
+                        if dir_index > 1 : #heisst das es min. eine möglichkeit gab
+                            valid = True
+                            print('es ist leider wahr', dir_index)
+                # wenn die gerüfte posiiton die teile farbe hat
+                if tiles[position[1] + (dir_index * directions[dir_check][1])][position[0] + (dir_index * directions[dir_check][0])] == tile_color :
+                    if status == 2 : #flipping tiles
+                        still_good = False
+                        valid = True
+                    if status == 1 : #flipping tiles
+                        still_good = False
+                # wenn immer noch kein abbruchskriterium vorliegt, kann es nur eine zu drehende platte sein
+                if still_good :
+                    if status == 2 : #flipping tiles
+                        print('flip:',([position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0])]))
+                        fliptiles.append([position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0])])
+                        print(len(fliptiles))
+                    if status == 1 : #possibility
+                        print('possibility',position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0]))
+                dir_index = dir_index + 1
+            else :
+                # leider out of board
+                still_good = False
+                
+            # wenn valid = true und len(fliptiles) > 0 flipt_tiles(fliptiles, tile_color)
+            if valid and len(fliptiles) > 0 and status == 2 :
+                print('Teile werden geflippt')
+                fliptiles.append([position[1],position[0]])
+                flipt_tiles(fliptiles, tile_color)   
+            if valid and status == 1 :
+                print('2nd check',dir_check, dir_index)
+                answer["x-pos"].append(position[0] + ((dir_index-1) * directions[dir_check][0]))
+                answer["y-pos"].append(position[1] + ((dir_index-1) * directions[dir_check][1]))
+                answer["tiles"].append(dir_index-2)
+                
+                fill('red')
+                text(str(dir_index-2), (position[0] + ((dir_index-1) * directions[dir_check][0]))*50+30, (position[1] + ((dir_index-1) * directions[dir_check][1]))*50+40)
+                
+    if status == 2 :
+        return ('filpped all tiles')
+    if status == 1 :
+        return answer
+        
 draw_board()
 draw_tiles()
-prod = find_possibilities(1)
-position = evaluation(prod) 
-print (prod)
-set_tile(1, position)
-print_tiles()
-#prod = find_possibilities(2)
-#set_tile(2, prod)
+not_end = 0
+total_cycles = 0
 
-#print (prod)
+the_tiles = find_tiles(1)
+print(the_tiles)
+
+die_antort = main_logic(1, (7,2), 1)
+print(die_antort)
+#draw_board()
+draw_tiles()
+#prod = find_possibilities(1)
+#position = evaluation(prod)
+#print(position)
+#set_tile(1, position)
+   
+#draw_tiles()
+
+
