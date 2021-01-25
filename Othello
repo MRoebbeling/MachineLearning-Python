@@ -20,6 +20,9 @@ tiles = [[0,0,0,0,0,0,0,0],
 directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
 
 def draw_board() :
+
+    # clears the screen and draws the board
+
     size (420,420)
     background (0,0.5,0.0)
     fill(0,0.7,0)
@@ -29,7 +32,11 @@ def draw_board() :
             rect(10+i*50, 10+j*50, 50, 50)
         
 def draw_tiles() :
-     for i in range(8):
+    
+    # draws the tiles on the board, based on the tiles array
+    # 1 is black, 2 is white and 0 is empty
+    
+    for i in range(8):
         for j in range(8):
             if tiles[j][i]==1 : #draw black tile
                 fill(0,0,0,0.5)
@@ -40,10 +47,17 @@ def draw_tiles() :
                 oval(12+i*50, 12+j*50, 46, 46)
 
 def print_tiles() :
+    
+    # prints the tiles array to the console
+    
     for i in range(len(tiles)):
         print(tiles[i])
         
 def flipt_tiles(liste, tile_color) :
+    
+    # flips the tiles in the list to tile_color
+    # list is x and y position
+    
     for i in range(len(liste)) :
         print('liste',liste[i][0])
         tiles[liste[i][0]][liste[i][1]]=tile_color
@@ -51,6 +65,11 @@ def flipt_tiles(liste, tile_color) :
     
     
 def find_tiles(tile_color):
+    
+    # find the tile position of the tile_color and 
+    # returns the answer in form of a dictionary with
+    # x-pos and y-pos
+    
     answer = {"x-pos":[],"y-pos":[]};
     for i in range(8):
         for j in range(8):
@@ -62,6 +81,10 @@ def find_tiles(tile_color):
   
     
 def evaluation (possibilities) :
+    
+    # Calculates the amount of tiles that are flipped at a specific
+    # position and returns the position where most tiles are flipped.
+    # this can be added with some kind of AI
     
     # First Check if one tile gets more then one solution
     # in case on tile gets more hits, it is added
@@ -102,11 +125,14 @@ def evaluation (possibilities) :
     
     
 def find_solutions (tile_color, positions, status):
-    # läuft durch alle teile der farbe tile_color und 
-    # sammelt lösungen mit der anzahl der möglichen Flips
-    for c in rand(len(positions)):
-        
-        main_logic(tile_color, position[c],status)
+    
+    # läuft durch alle teile der farbe tile_color (vorher mit findtiles erzeugt)
+    # und checkt alle möglichen positionen für eine Position eines zu platzierenden
+    # Teils und sammelt die Lösungen mit der anzahl der möglichen Flips ind einem 
+    # Dictionary das von main logig übergeben wird
+    for c in range(len(positions['x-pos'])):
+        print('find_solution:',positions['x-pos'][c],positions['y-pos'][c])
+        main_logic(1, (positions['x-pos'][c],positions['y-pos'][c]),1)
 
     
 def main_logic(tile_color, position, status) :
@@ -184,10 +210,13 @@ total_cycles = 0
 the_tiles = find_tiles(1)
 print(the_tiles)
 
+find_solutions (1, the_tiles, 1)
+
 die_antort = main_logic(1, (7,2), 1)
 print(die_antort)
 #draw_board()
 draw_tiles()
+print_tiles()
 #prod = find_possibilities(1)
 #position = evaluation(prod)
 #print(position)
