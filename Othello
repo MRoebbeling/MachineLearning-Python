@@ -152,8 +152,9 @@ def find_solutions (tile_color, positions, status):
     
 def main_logic(tile_color, position, status) :
     # status indicates if the funtion is serching for solutions or flipping the tiles after the best solition was found
-    # status 1 = finding solutions
-    # status 2 = flipping tiles
+    # status 1 = finding solutions -> (7, 7) position of colored tile and finding all flippable solutions
+    # status 2 = flipping tiles -> (7, 7) posiion of the tile to flip and find all tiles that can be flipped
+    
     print('staus',status,position)
     answer = {"x-pos":[],"y-pos":[],"tiles":[]} #positionen von möglichen teilen mit möglichkeit zur wendung Tiles gibt anzahl an
     possibilities = 0 # speichert temporär die anzahl der möglichen flips in der richtung ab
@@ -224,13 +225,14 @@ not_end = 0
 total_cycles = 0
 
 the_tiles = find_tiles(1)
-print(the_tiles)
+print('1',the_tiles)
 the_anw = find_solutions (1, the_tiles, 1)
-print(the_anw)
+print('2',the_anw)
 n_step = evaluation (the_anw)
-print('warum',n_step)
+print('3',n_step)
 print_tiles()
-the_anw2 = main_logic (1, n_step , 2)
+draw_board()
+the_anw2 = main_logic (1, (0,0) , 2)
 draw_tiles()
 print_tiles()
 #prod = find_possibilities(1)
