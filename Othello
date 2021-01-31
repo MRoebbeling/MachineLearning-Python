@@ -9,12 +9,12 @@
 
 
 tiles = [[0,0,0,0,0,0,0,0],
-         [0,2,0,0,2,0,0,0],
-         [0,0,1,0,2,0,0,1],
-         [0,0,0,2,2,0,0,2],
-         [0,0,0,0,1,0,0,2],
-         [0,0,0,0,0,2,0,2],
-         [0,0,0,0,0,0,2,2],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,2,1,0,0,0],
+         [0,0,0,1,2,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0]]
          
 directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
@@ -45,6 +45,17 @@ def draw_tiles() :
             if tiles[j][i]==2 : #draw black tile
                 fill(1,1,1,1)
                 oval(12+i*50, 12+j*50, 46, 46)
+                
+def calc_tiles():
+    blk = 0
+    wht = 0
+    for i in range(8):
+        for j in range(8):
+            if tiles[j][i]==1 : 
+                blk += 1
+            if tiles[j][i]==2 : 
+                wht += 1
+    return blk, wht
 
 def print_tiles() :
     
@@ -54,14 +65,14 @@ def print_tiles() :
         print(tiles[i])
         
 def flipt_tiles(liste, tile_color) :
-    print('yeah')
+    #print('yeah')
     # flips the tiles in the list to tile_color
     # list is x and y position
     
     for i in range(len(liste)) :
-        print('liste',liste[i][0])
+        #print('liste',liste[i][0])
         tiles[liste[i][0]][liste[i][1]]=tile_color
-    print_tiles()
+    #print_tiles()
     
     
 def find_tiles(tile_color):
@@ -88,7 +99,7 @@ def evaluation (possibilities) :
     
     # First Check if one tile gets more then one solution
     # in case on tile gets more hits, it is added
-
+    #print('possibilities',possibilities)
     start =0
     while start < len(possibilities['tiles']):
         pop_position=[] 
@@ -102,10 +113,23 @@ def evaluation (possibilities) :
                  possibilities['tiles'][start]+=possibilities['tiles'][i]
                  pop_position.append(i)
                  
+                 
+        # there is the problem !!!!
+        # if on is taken out, and the other one in last, index is out
+        # of bounds
+        last_popos = -1 #position to recognize if there are more tehn one postition to take 
+                        #out of the pop_position array
+        #print('popposition',pop_position)
         for i in pop_position:
-            possibilities['x-pos'].pop(i)
-            possibilities['y-pos'].pop(i)
-            possibilities['tiles'].pop(i)
+            #print('i',i)
+            if last_popos < i:
+                r = i-1
+            else:
+                r = 1
+            possibilities['x-pos'].pop(r)
+            possibilities['y-pos'].pop(r)
+            possibilities['tiles'].pop(r)
+            last_popos = r
             #possibilities['direction'].pop(i)
             #print(possibilities)
         start += 1         
@@ -138,7 +162,7 @@ def find_solutions (tile_color, positions, status):
     for c in range(len(positions['x-pos'])):
         #print('find_solution:',positions['x-pos'][c],positions['y-pos'][c])
         #print('loesung',main_logic(1, (positions['x-pos'][c],positions['y-pos'][c]),1))
-        tmp_answer = (main_logic(1, (positions['x-pos'][c],positions['y-pos'][c]),1))
+        tmp_answer = (main_logic(tile_color, (positions['x-pos'][c],positions['y-pos'][c]),1))
         #print('tmp',len(tmp_answer['x-pos']))
         for r in range(len(tmp_answer['x-pos'])):
             answer["x-pos"].append(tmp_answer['x-pos'][r])
@@ -155,7 +179,7 @@ def main_logic(tile_color, position, status) :
     # status 1 = finding solutions -> (7, 7) position of colored tile and finding all flippable solutions
     # status 2 = flipping tiles -> (7, 7) posiion of the tile to flip and find all tiles that can be flipped
     
-    print('staus',status,position)
+    #print('staus',status,position)
     answer = {"x-pos":[],"y-pos":[],"tiles":[]} #positionen von möglichen teilen mit möglichkeit zur wendung Tiles gibt anzahl an
     possibilities = 0 # speichert temporär die anzahl der möglichen flips in der richtung ab
     
@@ -170,7 +194,7 @@ def main_logic(tile_color, position, status) :
         while still_good :
             # abfrage on in range of board
             if position[0]+(dir_index*directions[dir_check][0])>=0 and position[0]+(dir_index*directions[dir_check][0])<=7 and position[1]+(dir_index*directions[dir_check][1])>=0 and position[1]+(dir_index*directions[dir_check][1])<=7 :
-                print('es geht weiter mit direction',dir_check,dir_index)
+                #print('es geht weiter mit direction',dir_check,dir_index)
                 # wenn die geprüfte position 0 ist 
                 if tiles[position[1] + (dir_index * directions[dir_check][1])][position[0] + (dir_index * directions[dir_check][0])] == 0 :
                     if status == 2 : #flipping tiles
@@ -179,7 +203,7 @@ def main_logic(tile_color, position, status) :
                         still_good = False
                         if dir_index > 1 : #heisst das es min. eine möglichkeit gab
                             valid = True
-                            print('es ist leider wahr', dir_index)
+                            #print('es ist leider wahr', dir_index)
                 # wenn die gerüfte posiiton die teile farbe hat
                 if tiles[position[1] + (dir_index * directions[dir_check][1])][position[0] + (dir_index * directions[dir_check][0])] == tile_color :
                     if status == 2 : #flipping tiles
@@ -190,7 +214,7 @@ def main_logic(tile_color, position, status) :
                 # wenn immer noch kein abbruchskriterium vorliegt, kann es nur eine zu drehende platte sein
                 if still_good :
                     if status == 2 : #flipping tiles
-                        print('flip:',([position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0])]))
+                        #print('flip:',([position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0])]))
                         fliptiles.append([position[1] + (dir_index * directions[dir_check][1]),position[0] + (dir_index * directions[dir_check][0])])
                         #print(len(fliptiles))
                     #if status == 1 : #possibility
@@ -202,7 +226,7 @@ def main_logic(tile_color, position, status) :
                 
             # wenn valid = true und len(fliptiles) > 0 flipt_tiles(fliptiles, tile_color)
             if valid and len(fliptiles) > 0 and status == 2 :
-                print('Teile werden geflippt')
+                #print('Teile werden geflippt')
                 fliptiles.append([position[1],position[0]])
                 flipt_tiles(fliptiles, tile_color)   
             if valid and status == 1 :
@@ -219,27 +243,47 @@ def main_logic(tile_color, position, status) :
     if status == 1 :
         return answer
         
-draw_board()
-draw_tiles()
-not_end = 0
-total_cycles = 0
-
-the_tiles = find_tiles(1)
-print('1',the_tiles)
-the_anw = find_solutions (1, the_tiles, 1)
-print('2',the_anw)
-n_step = evaluation (the_anw)
-print('3',n_step)
-print_tiles()
-draw_board()
-the_anw2 = main_logic (1, (0,0) , 2)
-draw_tiles()
-print_tiles()
-#prod = find_possibilities(1)
-#position = evaluation(prod)
-#print(position)
-#set_tile(1, position)
-   
+#draw_board()
 #draw_tiles()
+#not_end = 0
+#total_cycles = 0
+actual = 2
+zuege = 0
+speed(100)
 
+def setup():
+    draw_board()
+    draw_tiles()
+
+def draw():
+    global actual 
+    global zuege
+    draw_board()
+    draw_tiles()
+
+    if actual == 1:
+        actual = 2
+    else:
+        actual = 1    
+    #draw_board()
+    the_tiles1 = find_tiles(actual)
+    #print(the_tiles1)
+    the_anw1 = find_solutions (actual, the_tiles1, 1)
+    #print(the_anw1)
+    
+    if len(the_anw1['x-pos']) > 0:
+        n_step1 = evaluation (the_anw1)
+        the_anw3 = main_logic (actual, n_step1 , 2)
+        zuege += 1
+        #print(zuege)
+    else:
+        stop()
+def stop():
+    print(zuege)
+    print ('Fini')
+    draw_board()
+    draw_tiles()
+    print (calc_tiles())
+    halt()
+    
 
