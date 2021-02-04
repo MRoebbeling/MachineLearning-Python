@@ -21,15 +21,15 @@ tiles = [[0,0,0,0,0,0,0,0],
 directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
 
 def mini_max(board, iteration, tile_color):
-    tmp_board = copy.deepcopy(board)
     best_move = [-1,0,0] # score, x, y
     if iteration > 0 :
         tielset = find_tiles(tmp_board, tile_color)
         tmp_solution = find_solutions (tmp_board, tile_color, tielset, 1)
         #set and flip tiles
-        if len(tmp_solution['x-pos']) > 0:
+        for i in range(len(tmp_solution['x-pos'])):
+            tmp_board = copy.deepcopy(board)
             n_step = evaluation (tmp_solution)
-            the_anw3 = main_logic (tmp_board, tile_color, n_step , 2)
+            main_logic (tmp_board, tile_color, n_step , 2)
             if tile_color == 1:
                 tile_color = 2
             else:
@@ -290,7 +290,7 @@ def draw():
     global zuege
     draw_board()
     draw_tiles(tiles)
-    print(mini_max(tiles, 3, 1))
+    #print(mini_max(tiles, 3, 1))
 
     #change_board(tiles, 5, 5)
     #print_tiles(tiles)
@@ -303,10 +303,11 @@ def draw():
     the_tiles1 = find_tiles(tiles, actual)
     #print(the_tiles1)
     the_anw1 = find_solutions (tiles, actual, the_tiles1, 1)
-    #print(the_anw1)
+    print(the_anw1)
     
     if len(the_anw1['x-pos']) > 0:
         n_step1 = evaluation (the_anw1)
+        #print (n_step1)
         the_anw3 = main_logic (tiles, actual, n_step1 , 2)
         zuege += 1
         #print(zuege)
