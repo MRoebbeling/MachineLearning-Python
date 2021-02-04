@@ -6,6 +6,7 @@
 
 # Ende des Spieles, wenn beide Farben nicht mehr legen können
 # oder es für beide keine legalen züge mehr gibt
+import copy
 
 
 tiles = [[0,0,0,0,0,0,0,0],
@@ -20,14 +21,33 @@ tiles = [[0,0,0,0,0,0,0,0],
 directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
 
 def mini_max(board, iteration, tile_color):
-    # if no possibilities END
-    the_tiles1 = find_tiles(board, tile_color)
-    the_anw1 = find_solutions (board, tile_color, the_tiles1, 1)
-    best_move = -1
-    if len(the_anw1["x-pos"]) > 0 and iteration > 0 :
+    tmp_board = copy.deepcopy(board)
+    best_move = [-1,0,0] # score, x, y
+    if iteration > 0 :
+        tielset = find_tiles(tmp_board, tile_color)
+        tmp_solution = find_solutions (tmp_board, tile_color, tielset, 1)
+        #set and flip tiles
+        if len(tmp_solution['x-pos']) > 0:
+            n_step = evaluation (tmp_solution)
+            the_anw3 = main_logic (tmp_board, tile_color, n_step , 2)
+            if tile_color == 1:
+                tile_color = 2
+            else:
+                tile_color = 1
+            move = mini_max(tmp_board, iteration-1, tile_color)
+            
         
+    
+    print('raus')
+    return best_move
 
-    return len(the_anw1["x-pos"])
+def change_board(board, x, y):
+    new_board = copy.deepcopy(board)
+    new_board[x][y]=5
+    
+    
+
+
 
 def draw_board() :
 
@@ -271,6 +291,9 @@ def draw():
     draw_board()
     draw_tiles(tiles)
     print(mini_max(tiles, 3, 1))
+
+    #change_board(tiles, 5, 5)
+    #print_tiles(tiles)
 
     if actual == 1:
         actual = 2
