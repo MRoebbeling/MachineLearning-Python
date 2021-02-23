@@ -1,4 +1,4 @@
-# black is 1
+#e black is 1
 
 # toDO:
 # zwei richtigngen auf einem Feld zusammenfügen
@@ -20,26 +20,70 @@ tiles = [[0,0,0,0,0,0,0,0],
          
 directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1],[+1,+1]]
 
-def mini_max(board, iteration, tile_color):
-    best_move = [-1,0,0] # score, x, y
+def mini_max(board, iteration, tile_color, minormax):
+    best_max = [-10000,0] # score, x, y
+    best_min = [10000,0]
+    best_score = [0,0]
+    tile_color = tile_color
+    #print('zuege:',zuege)
+    print('iteration',iteration, minormax)
     if iteration > 0 :
-        tielset = find_tiles(tmp_board, tile_color)
-        tmp_solution = find_solutions (tmp_board, tile_color, tielset, 1)
-        #set and flip tiles
-        for i in range(len(tmp_solution['x-pos'])):
-            tmp_board = copy.deepcopy(board)
-            n_step = evaluation (tmp_solution)
-            main_logic (tmp_board, tile_color, n_step , 2)
-            if tile_color == 1:
-                tile_color = 2
-            else:
-                tile_color = 1
-            move = mini_max(tmp_board, iteration-1, tile_color)
-            
+        #global best_score 
+        if tile_color == 1:
+            tile_color = 2
+        else: 
+            tile_color =1
         
-    
-    print('raus')
-    return best_move
+        tielset = find_tiles(board, tile_color)
+        tmp_solution = find_solutions (board, tile_color, tielset, 1)
+        #print ('Solution and Iteration',tmp_solution,iteration)
+        for i in range(len(tmp_solution['x-pos'])):
+            tmp_score = 0
+            tmp_board = copy.deepcopy(board)
+           
+            main_logic (tmp_board, tile_color, (tmp_solution['x-pos'][i], tmp_solution['y-pos'][i]) , 2)
+            #print('before')
+            tmp_score = mini_max(tmp_board, iteration-1, tile_color, not minormax)
+            print('After: Score, Iteration, Number, Minormax', best_max, best_min, tmp_score, iteration, i, minormax)
+            #print(tmp_score)
+            #print_tiles(tmp_board)
+            
+            print('This is I1', i)
+            #print('Mitte zweig',tmp_score)
+            if minormax == True: #bester score fuer tilecolor
+                print('This is I2#', i)
+                #global i
+                print('+evaluation', tmp_score, best_max)
+                if tmp_score[0] > best_max[0]:
+                #if tmp_score[0] > best_score[0]:
+                    best_max[0] = tmp_score[0]
+                    best_max[1] = i
+                    
+                    print('more',best_max,i)
+            else:   #schlechtester score fuer tilecolor
+                #global i
+                print('This is I2-', i)
+                print('-evaluation', tmp_score, best_min)
+                if tmp_score[0] < best_min[0]:
+                    best_min[0] = tmp_score[0]
+                    best_min[1] = i
+                    
+                    print('less',best_min,i)
+            #print('inside', best_score)
+        if minormax == True:
+            best_score = best_max  
+        else:
+            best_score = best_min
+        # hier best min und bestmax auswerten und als best_score returnen    
+        #Wenn Ende des Zweigs erreicht oder Ende der Iteration
+    else:
+        #best score muss noch nach farbe und subtrahiert werden.
+        #best_score=calc_tiles(board)
+        best_score[0]= calc_color(board, tile_color)
+        best_score[1]= 0
+        print('Ende Zweig:', iteration, best_score)
+    #print_tiles(board)
+    return best_score
 
 def change_board(board, x, y):
     new_board = copy.deepcopy(board)
@@ -86,6 +130,26 @@ def calc_tiles(board):
             if board[j][i]==2 : 
                 wht += 1
     return blk, wht
+    
+def calc_color(board, tiles_color):
+    print('Color Evaluation:',tiles_color)
+    print_tiles(board)
+    blk = 0
+    wht = 0
+    calc = 0
+    for i in range(8):
+        for j in range(8):
+            if board[j][i]==1 : 
+                blk += 1
+            if board[j][i]==2 : 
+                wht += 1
+    if tiles_color == 1: #black
+        return blk - wht
+        
+    if tiles_color == 2: #white
+        return wht-blk
+    
+    
 
 def print_tiles(board) :
     
@@ -205,6 +269,7 @@ def find_solutions (board, tile_color, positions, status):
     return answer
     
 def main_logic(board, tile_color, position, status) :
+    #print(board, tile_color, position, status)
     # status indicates if the funtion is serching for solutions or flipping the tiles after the best solition was found
     # status 1 = finding solutions -> (7, 7) position of colored tile and finding all flippable solutions
     # status 2 = flipping tiles -> (7, 7) posiion of the tile to flip and find all tiles that can be flipped
@@ -277,9 +342,9 @@ def main_logic(board, tile_color, position, status) :
 #draw_tiles()
 #not_end = 0
 #total_cycles = 0
-actual = 2
+actual = 1
 zuege = 0
-speed(100)
+#speed(100)
 
 def setup():
     draw_board()
@@ -290,10 +355,19 @@ def draw():
     global zuege
     draw_board()
     draw_tiles(tiles)
-    #print(mini_max(tiles, 3, 1))
-
+    result = (mini_max(tiles, 3, 2, True))
+    print(zuege)
+    print('reuslt',result)
+    tielset = find_tiles(tiles, 1)
+    tmp_solution = find_solutions (tiles, 1, tielset, 1)
+    print(tmp_solution)
+    print(tmp_solution['x-pos'][result[1]],tmp_solution['y-pos'][result[1]])
+    main_logic (tiles, actual, (tmp_solution['x-pos'][result[1]],tmp_solution['y-pos'][result[1]]) , 2)
+    stop()
     #change_board(tiles, 5, 5)
     #print_tiles(tiles)
+    
+    """"
 
     if actual == 1:
         actual = 2
@@ -303,7 +377,7 @@ def draw():
     the_tiles1 = find_tiles(tiles, actual)
     #print(the_tiles1)
     the_anw1 = find_solutions (tiles, actual, the_tiles1, 1)
-    print(the_anw1)
+    #print(the_anw1)
     
     if len(the_anw1['x-pos']) > 0:
         n_step1 = evaluation (the_anw1)
@@ -313,6 +387,9 @@ def draw():
         #print(zuege)
     else:
         stop()
+        
+    """
+    
 def stop():
     print(zuege)
     print ('Fini')
